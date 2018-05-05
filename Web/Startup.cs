@@ -1,11 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
+using Bll.Customers.Implemetiation;
+using Bll.Customers.Interfaces;
+using Context.ctx;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Repository.Generic;
+using Repository.Interface;
 
 namespace Web
 {
@@ -27,9 +30,11 @@ namespace Web
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
                     optionsBuilder =>
-                        optionsBuilder.MigrationsAssembly("Newsgps.MotoristaPremium.Web")
+                        optionsBuilder.MigrationsAssembly("Context.ctx")
                       )
             );
+            services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
+            services.AddScoped(typeof(ICustomers), typeof(Custumers));
 
             services.AddMvc();
         }
