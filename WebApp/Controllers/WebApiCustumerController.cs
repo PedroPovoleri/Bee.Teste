@@ -8,6 +8,8 @@ using Model.POCO;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Newtonsoft.Json;
+using WebApp.Filters;
+using Bll.Validation.Interfaces;
 
 namespace WebApp.Controllers
 {
@@ -16,16 +18,19 @@ namespace WebApp.Controllers
     public class WebApiCustumerController : Controller
     {
         private readonly ICustomers _customers;
+        private readonly IResources _resources;
 
-        public WebApiCustumerController(ICustomers customers)
+        public WebApiCustumerController(ICustomers customers, IResources resources)
         {
             _customers = customers;
+            _resources = resources;
         }
 
         [HttpGet]
         [Route("GetCustumers")]
         public object GetCustumers(DataSourceLoadOptions loadOptions)
         {
+
             if (loadOptions.Skip == 0)
             {
                 var lst = _customers.GetPaged(loadOptions.Take, 1);
@@ -38,32 +43,43 @@ namespace WebApp.Controllers
 
         [HttpPost]
         [Route("InsertCustumer")]
-        public IActionResult InsertCustumer(string values) {
-            var newCustumer = new Customers();
-            JsonConvert.PopulateObject(values, newCustumer);
+        public IActionResult InsertCustumer(string values)
+        {
+            if (checkIsAutorized(1, "CRUD"))
+            {
+                var newCustumer = new Customers();
+                JsonConvert.PopulateObject(values, newCustumer);
 
-            _customers.AddCustumers(newCustumer);
-            
-            return Ok();
+                _customers.AddCustumers(newCustumer);
+
+                return Ok();
+            }
+            return Ok(401);
         }
 
         [HttpPut]
         [Route("UpdateCustumer")]
         public void UpdateCustumer(int key, string values)
         {
-            var custumer = _customers.GetCustomersById(key);
-            JsonConvert.PopulateObject(values, custumer);
-            
-            _customers.UpdateCustomers(custumer);
+            if (checkIsAutorized(1, "CRUD"))
+            {
+                var custumer = _customers.GetCustomersById(key);
+                JsonConvert.PopulateObject(values, custumer);
 
+                _customers.UpdateCustomers(custumer);
+            }
         }
 
         [HttpDelete]
         [Route("DeleteCustumer")]
         public void DeleteCustumer(int key)
         {
-            var custumer = _customers.GetCustomersById(key);
-            _customers.RemoveCustumers(custumer);
+            if (checkIsAutorized(1, "CRUD"))
+            {
+                var custumer = _customers.GetCustomersById(key);
+                _customers.RemoveCustumers(custumer);
+            }
+
         }
 
         [HttpGet]
@@ -82,16 +98,21 @@ namespace WebApp.Controllers
         {
             try
             {
-                var lookup = from i in _customers.GetCustomers()
-                             let text = i.name + " (" + i.address + ")"
-                             orderby i.name
-                             select new
-                             {
-                                 Value = i.id,
-                                 Text = text
-                             };
+                if (checkIsAutorized(1, "CRUD"))
+                {
 
-                return DataSourceLoader.Load(lookup, loadOptions);
+                    var lookup = from i in _customers.GetCustomers()
+                                 let text = i.name + " (" + i.address + ")"
+                                 orderby i.name
+                                 select new
+                                 {
+                                     Value = i.id,
+                                     Text = text
+                                 };
+
+                    return DataSourceLoader.Load(lookup, loadOptions);
+                }
+                return new Exception("Not Autorized");
             }
             catch (Exception ex)
             {
@@ -101,5 +122,9 @@ namespace WebApp.Controllers
 
         }
 
+        private bool checkIsAutorized(long usrId, string resource)
+        {
+            return _resources.UserHasResourceAuthorization(usrId, resource);
+        }
     }
 }

@@ -15,7 +15,7 @@ namespace Context.ctx
         }
 
         public DbSet<Customers> Customers { get; set; }
-        public DbSet<Roles> Roles { get; set; }
+        public DbSet<User> Roles { get; set; }
         public DbSet<Users> Users { get; set; }
 
 

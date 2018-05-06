@@ -1,4 +1,5 @@
 ﻿using Model.Interface;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -12,7 +13,7 @@ namespace Model.POCO
         public string password { get; set; }
 
         [ForeignKey("RolesId")]
-        public Roles _Roles { get; set; }
+        public ICollection<User> Roles { get; set; }
 
         public int RolesId { get; set; }
 

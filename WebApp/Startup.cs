@@ -12,6 +12,9 @@ using Repository.Interface;
 using Bll.Customers.Interfaces;
 using Repository.Generic;
 using Bll.Customers.Implemetiation;
+using Bll.Validation.Interfaces;
+using Bll.Validation.Implemetiation;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace WebApp
 {
@@ -38,9 +41,11 @@ namespace WebApp
             );
             services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
             services.AddScoped(typeof(ICustomers), typeof(Custumers));
+            services.AddScoped(typeof(IResources), typeof(Resources));
 
             services.AddMvc();
-            
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,13 +62,14 @@ namespace WebApp
             }
 
             app.UseStaticFiles();
-
+            
             app.UseMvc(routes =>
-            {             
+            {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+            app.UseAuthentication();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Bll.Validation.Interfaces;
+﻿using Bll.Validation.Implemetiation;
+using Bll.Validation.Interfaces;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Collections.Generic;
@@ -10,16 +11,16 @@ namespace WebApp.Filters
     public class ResourcesAccessFilter : ActionFilterAttribute, IActionFilter
     {
         private readonly IResources _resources;
-        public string _resourceName;
+        public string resourceName;
 
         public ResourcesAccessFilter()
         {
 
         }
 
-        public ResourcesAccessFilter(string resourceName, IResources resources)
+        public ResourcesAccessFilter(string _resourceName, IResources resources)
         {
-            resources = _resources;
+            _resources = resources;
             _resourceName = resourceName;
         }
 
@@ -27,24 +28,11 @@ namespace WebApp.Filters
         {
             try
             {
-                if ((string.IsNullOrWhiteSpace(_resourceName) == false) && (_resourceName.Equals("Public") == false))
+                
+                if ((string.IsNullOrWhiteSpace(resourceName) == false) && (resourceName.Equals("Public") == false))
                 {
-                    long userId = 0;//(long)filterContext.HttpContext.Session["userId"];
-
-                    if (_resources.UserNotLogged(userId) == false)
-                    {
-                        filterContext.HttpContext.Response.Redirect("~/login");
-                    }
-
-                    if (_resourceName.Equals("Protected"))
-                    {
-                        return;
-                    }
-                    if (_resourceName.Equals("PublicoLogado") && _resources.UserNotLogged(userId) == true)
-                    {
-                        return;
-                    }
-                    bool hasAuthorization = _resources.UserHasResourceAuthorization(userId, _resourceName);
+              
+                    bool hasAuthorization = _resources.UserHasResourceAuthorization(1, resourceName);
 
                     if (hasAuthorization == false)
                     {

@@ -36,7 +36,7 @@
     .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
     .Height(600)
     .ShowBorders(true)    
-    .Editing(e => e.AllowAdding(true).AllowDeleting(true).AllowUpdating(true))
+    .Editing(e => e.AllowAdding((bool)@ViewData["CanEdit"]).AllowDeleting((bool)@ViewData["CanEdit"]).AllowUpdating((bool)@ViewData["CanEdit"]))
     .Grouping(g => g.AutoExpandAll(false))
     .Summary(s => s
         .TotalItems(totalItems =>
