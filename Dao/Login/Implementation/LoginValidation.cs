@@ -19,7 +19,7 @@ namespace Bll.Login.Implementation
 
         public long ValidateUser(string _login, string _password)
         {
-            return _userRepository.GetAll().ToList().Where(x => x.username == _login && x.password == _password).FirstOrDefault().Id;
+            return _userRepository.GetAll().ToList().Where(x => x.username == _login && x.password == _password).FirstOrDefault().id;
         }
     }
 }

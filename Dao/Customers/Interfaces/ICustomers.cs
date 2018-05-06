@@ -7,7 +7,11 @@ namespace Bll.Customers.Interfaces
     {
         List<Model.POCO.Customers> GetCustomers();
 
-        Model.POCO.Customers EditCustomers(long customersId);
+        List<Model.POCO.Customers> GetPaged(int page, int perPage);
+
+        Model.POCO.Customers GetCustomersById(long custumersId);
+
+        Model.POCO.Customers UpdateCustomers(Model.POCO.Customers newCustomer);
 
         bool AddCustumers(Model.POCO.Customers customers);
 

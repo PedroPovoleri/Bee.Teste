@@ -3,7 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Model.Interface;
 using Repository.Interface;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -32,7 +34,7 @@ namespace Repository.Generic
 
         public T GetById(long id)
         {
-            return GetQueryAll().SingleOrDefault(e => e.Id == id);
+            return GetQueryAll().SingleOrDefault(e => e.id == id);
         }
 
         public void Remove(T entity)
@@ -54,10 +56,52 @@ namespace Repository.Generic
 
         private T Save(T entity, bool update)
         {
-            _session.Entry(entity).State = update ? EntityState.Modified : EntityState.Added;
-            _session.SaveChanges();
-            _session.Dispose();
+            var saved = false;
+            while (!saved)
+            {
+                try
+                {                    
+                    _session.Entry(entity).State = update ? EntityState.Modified : EntityState.Added;
+                    _session.SaveChanges();
+                    _session.Dispose();                   
+              
+                    saved = true;
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    foreach (var entry in ex.Entries)
+                    {
+                        if (entry.Entity is T)
+                        {
+                            var proposedValues = entry.CurrentValues;
+                            var databaseValues = entry.GetDatabaseValues();
+
+                            foreach (var property in proposedValues.Properties)
+                            {
+                                var proposedValue = proposedValues[property];
+                                var databaseValue = databaseValues[property];
+
+                                // TODO: decide which value should be written to database
+                                // proposedValues[property] = <value to be saved>;
+                            }
+
+                            // Refresh original values to bypass next concurrency check
+                            entry.OriginalValues.SetValues(databaseValues);
+                        }
+                        else
+                        {
+                            throw new NotSupportedException(
+                                "Don't know how to handle concurrency conflicts for "
+                                + entry.Metadata.Name);
+                        }
+                    }
+                }
+            }
+
+
             return entity;
+
+          
         }
 
         private IQueryable<T> GetQueryAll()
@@ -72,7 +116,7 @@ namespace Repository.Generic
 
         public async Task<T> AsyncGetById(long id)
         {
-            return await GetQueryAll().SingleOrDefaultAsync(e => e.Id == id);
+            return await GetQueryAll().SingleOrDefaultAsync(e => e.id == id);
         }
 
         public async void AsyncRemove(T entity)
@@ -116,6 +160,10 @@ namespace Repository.Generic
             throw new NotImplementedException();
         }
 
+        public IEnumerable<Model.POCO.Customers> WithPaging(int page, int pageSize)
+        {
+            return _session.Customers.FromSql("SELECT * FROM dbo.Customers Where id between @pageSize AND (@page*@pageSize)", new SqlParameter("page",page), new SqlParameter("pageSize",pageSize)).AsEnumerable<Model.POCO.Customers>();
+        }
     }
 
 }

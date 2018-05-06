@@ -8,7 +8,7 @@ namespace Model.POCO
     public class Roles : IEntity
     {
         [Key]
-        public int Id { get; set; }
+        public int id { get; set; }
         public string Name { get; set; }
 
         [ForeignKey("UserId")]

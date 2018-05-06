@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 using Repository.Interface;
 using System.Linq;
+using Model.POCO;
 
 namespace Bll.Customers.Implemetiation
 {
@@ -17,12 +18,12 @@ namespace Bll.Customers.Implemetiation
         }
         public bool AddCustumers(Model.POCO.Customers customers)
         {
-            return _custumersRepository.Save(customers).Id != 0;
+            return _custumersRepository.Save(customers).id != 0;
         }
 
-        public Model.POCO.Customers EditCustomers(long customersId)
+        public Model.POCO.Customers UpdateCustomers(Model.POCO.Customers newCustomer)
         {
-            return _custumersRepository.GetById(customersId);
+            return _custumersRepository.Update(newCustomer);
         }
 
         public List<Model.POCO.Customers> GetCustomers()
@@ -43,6 +44,16 @@ namespace Bll.Customers.Implemetiation
 
                 throw ex;
             }
+        }
+
+        public Model.POCO.Customers GetCustomersById(long custumersId)
+        {
+            return _custumersRepository.GetById(custumersId);
+        }
+
+        public List<Model.POCO.Customers> GetPaged(int page, int perPage)
+        {
+            return _custumersRepository.WithPaging(page, perPage).ToList();
         }
     }
 }

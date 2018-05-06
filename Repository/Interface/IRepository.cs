@@ -14,10 +14,10 @@ namespace Repository.Interface
         Task<T> AsyncUpdate(T entity);
 
         T Save(T entity);
-        IEnumerable<T> GetAll();        
+        IEnumerable<T> GetAll();
         T GetById(long id);
         void Remove(T entity);
         T Update(T entity);
-
+        IEnumerable<Model.POCO.Customers> WithPaging(int page, int pageSize);
     }
 }

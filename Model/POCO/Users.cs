@@ -7,7 +7,7 @@ namespace Model.POCO
     public class Users : IEntity
     {
         [Key]
-        public int Id { get; set; }
+        public int id { get; set; }
         public string username { get; set; }
         public string password { get; set; }
 

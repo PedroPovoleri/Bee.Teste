@@ -1,0 +1,44 @@
+{
+  "name": "devextreme-aspnet-data",
+  "title": "DevExtreme.AspNet.Data",
+  "version": "99.0.0",
+  "description": "%meta_description%",
+  "homepage": "%meta_project_url%",
+  "license": "MIT",
+  "author": {
+    "name": "%meta_company%"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DevExpress/DevExtreme.AspNet.Data.git"
+  },
+  "main": "js/dx.aspnet.data.js",
+  "types": "js/dx.aspnet.data.d.ts",
+  "peerDependencies": {
+    "devextreme": ">=16.1.0"
+  },
+  "devDependencies": {
+    "@types/jquery": "^2.0.39",
+    "bluebird": "^3.5.1",
+    "eclint": "^2.0.1",
+    "jquery": "^3.3.1",
+    "jshint": "^2.9.2",
+    "karma": "^1.3.0",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-coverage": "^1.1.1",
+    "karma-ie-launcher": "^1.0.0",
+    "karma-qunit": "^1.2.1",
+    "qunitjs": "^2.1.1",
+    "typescript": "^2.0.10",
+    "webpack": "^1.14.0",
+    "xhr-mock": "^2.3.1"
+  },
+  "scripts": {
+    "karma": "cd js-test && karma start",
+    "karma-bundled": "cd js-test && webpack --define ASPNET_DATA_SCRIPT='../js/dx.aspnet.data.js' test.js test-bundle.js && karma start --bundled",
+    "karma-bundled-nojquery": "cd js-test && webpack --define ASPNET_DATA_SCRIPT='../js-nojquery/index.js' test.js test-bundle.js && karma start --bundled",
+    "dts": "cd js-test && tsc check-ts-compilation.ts && tsc check-ts-compilation.nojquery.ts",
+    "jshint": "jshint --verbose js js-nojquery",
+    "eclint": "eclint check *.{yml,json} {net,js,js-test}/**/*.{cs,js,ts,html,json,cshtml,tt} !net/**/{bin,obj}/** !net/docfx/build/** !js-test/test-bundle.js !net/Sample/{node_modules,wwwroot/lib}/**"
+  }
+}

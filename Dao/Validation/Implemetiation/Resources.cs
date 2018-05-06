@@ -18,7 +18,7 @@ namespace Bll.Validation.Implemetiation
         public bool UserHasResourceAuthorization(long userId, string resourceName)
         {
             var roles = _rolesRepository.GetAll().ToList();
-            return roles.Where(x => x.UserId == userId).FirstOrDefault().Id > 0;
+            return roles.Where(x => x.UserId == userId).FirstOrDefault().id > 0;
         }
 
         public bool UserNotLogged(long userId)

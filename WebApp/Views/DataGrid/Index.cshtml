@@ -1,0 +1,56 @@
+﻿@using DevExtreme.AspNet.Mvc;
+
+@{
+    ViewData["Title"] = "DataGrid";
+}
+<div class="row">
+    @(Html.DevExtreme().DataGrid<Model.POCO.Customers>()
+        .DataSource(d => d.Mvc()
+            .Controller("WebApiCustumer")
+            .LoadAction("GetCustumers")
+            .InsertAction("InsertCustumer")
+            .UpdateAction("UpdateCustumer")
+            .DeleteAction("DeleteCustumer")
+            .Key("id")
+        )
+        .RemoteOperations(true)
+        .Columns(columns =>
+        {
+            columns.AddFor(m => m.name);
+
+            columns.AddFor(m => m.address);
+            
+        })
+        .LoadPanel(loadPanel => loadPanel.Enabled(false))
+        .Scrolling(scrolling => scrolling.Mode(GridScrollingMode.Infinite))
+        .Sorting(sorting => sorting.Mode(GridSortingMode.None))
+        .FilterRow(f => f.Visible(true))
+        .HeaderFilter(f => f.Visible(true))
+        .GroupPanel(p => p.Visible(true))
+        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+        .Height(600)
+        .ShowBorders(true)
+        .FilterRow(f => f.Visible(true))
+    .HeaderFilter(f => f.Visible(true))
+    .GroupPanel(p => p.Visible(true))
+    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+    .Height(600)
+    .ShowBorders(true)    
+    .Editing(e => e.AllowAdding(true).AllowDeleting(true).AllowUpdating(true))
+    .Grouping(g => g.AutoExpandAll(false))
+    .Summary(s => s
+        .TotalItems(totalItems =>
+        {
+            totalItems.AddFor(m => m.id).SummaryType(SummaryType.Sum);
+        })
+        .GroupItems(groupItems =>
+        {
+            groupItems.AddFor(m => m.name).SummaryType(SummaryType.Sum);
+
+            groupItems.Add().SummaryType(SummaryType.Count);
+        })
+    )
+    )
+
+    )
+</div>
