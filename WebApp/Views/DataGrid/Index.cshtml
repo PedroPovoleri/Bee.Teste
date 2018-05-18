@@ -1,10 +1,13 @@
-﻿@using DevExtreme.AspNet.Mvc;
-
+﻿
 @{
-    ViewData["Title"] = "DataGrid";
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div class="row">
-    @(Html.DevExtreme().DataGrid<Model.POCO.Customers>()
+
+@using DevExtreme.AspNet.Mvc;
+
+
+@(Html.DevExtreme().DataGrid<Model.POCO.Customers>()
         .DataSource(d => d.Mvc()
             .Controller("WebApiCustumer")
             .LoadAction("GetCustumers")
@@ -19,7 +22,7 @@
             columns.AddFor(m => m.name);
 
             columns.AddFor(m => m.address);
-            
+
         })
         .LoadPanel(loadPanel => loadPanel.Enabled(false))
         .Scrolling(scrolling => scrolling.Mode(GridScrollingMode.Infinite))
@@ -35,7 +38,7 @@
     .GroupPanel(p => p.Visible(true))
     .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
     .Height(600)
-    .ShowBorders(true)    
+    .ShowBorders(true)
     .Editing(e => e.AllowAdding((bool)@ViewData["CanEdit"]).AllowDeleting((bool)@ViewData["CanEdit"]).AllowUpdating((bool)@ViewData["CanEdit"]))
     .Grouping(g => g.AutoExpandAll(false))
     .Summary(s => s
@@ -50,7 +53,7 @@
             groupItems.Add().SummaryType(SummaryType.Count);
         })
     )
-    )
+)
 
-    )
-</div>
+
+

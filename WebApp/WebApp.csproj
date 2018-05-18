@@ -5,6 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Filters\**" />
+    <Content Remove="Filters\**" />
+    <EmbeddedResource Remove="Filters\**" />
+    <None Remove="Filters\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="DevExpress.Web" Version="17.2.7" />
     <PackageReference Include="DevExtreme.AspNet.Core" Version="17.2.7" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />

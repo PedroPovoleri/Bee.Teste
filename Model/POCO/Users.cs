@@ -11,11 +11,7 @@ namespace Model.POCO
         public int id { get; set; }
         public string username { get; set; }
         public string password { get; set; }
-
-        [ForeignKey("RolesId")]
-        public ICollection<User> Roles { get; set; }
-
-        public int RolesId { get; set; }
+        
 
     }
 }

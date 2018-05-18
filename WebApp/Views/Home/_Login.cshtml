@@ -1,0 +1,19 @@
+﻿@model WebApp.Models.Request.LoginRequest;
+
+
+@using (Html.BeginForm("LoginValidate", "Login", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+    @Html.ValidationSummary()
+    <fieldset>
+        <legend>Login</legend>
+
+        @Html.LabelFor(model => model.username)
+        @Html.TextBoxFor(m => m.username)
+
+        @Html.LabelFor(m => m.password)
+        @Html.PasswordFor(m => m.password)
+
+        <input type="submit" value="Login" class="button" />
+    </fieldset>
+}

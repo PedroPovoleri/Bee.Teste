@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Bll.Validation.Interfaces;
+using Microsoft.AspNetCore.Http;
 
 namespace WebApp.Controllers
 {
@@ -18,8 +15,25 @@ namespace WebApp.Controllers
 
         public IActionResult Index()
         {
-            ViewData["CanEdit"] = _resources.UserHasResourceAuthorization(1,"CRUD");
-            return View();
+            try
+            {
+                var _id = HttpContext.Session.GetString("UserId");
+
+                int id = int.Parse(_id);
+
+                if (_resources.UserHasResourceAuthorization(id, "CRUD"))
+                {
+                    ViewData["CanEdit"] = true;
+                    return View();
+
+                }
+                ViewData["CanEdit"] = false;
+                return View();
+            }
+            catch (System.Exception ex)
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
     }
 }

@@ -15,6 +15,7 @@ using Bll.Customers.Implemetiation;
 using Bll.Validation.Interfaces;
 using Bll.Validation.Implemetiation;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Bll.Login.Interface;
 
 namespace WebApp
 {
@@ -30,7 +31,7 @@ namespace WebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            
             string assemblyName = typeof(ApplicationDbContext).Namespace;
 
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -42,10 +43,16 @@ namespace WebApp
             services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
             services.AddScoped(typeof(ICustomers), typeof(Custumers));
             services.AddScoped(typeof(IResources), typeof(Resources));
+            services.AddScoped(typeof(ILogin), typeof(Bll.Login.Implementation.LoginValidation));
 
-            services.AddMvc();
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie();
+            services.AddMvc().AddSessionStateTempDataProvider();
+            services.AddSession(options =>
+            {
+                options.Cookie.Name = ".UserState";
+                options.IdleTimeout = TimeSpan.FromSeconds(300);
+            });
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,7 +69,7 @@ namespace WebApp
             }
 
             app.UseStaticFiles();
-            
+            app.UseSession( );
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

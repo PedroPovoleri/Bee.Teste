@@ -20,22 +20,20 @@ namespace WebApp.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return PartialView("_LoginPage");
         }
 
         [HttpPost]
-        public IActionResult Login(LoginRequest usr)
+        public IActionResult LoginValidate(LoginRequest usr)
         {
             var id = _loginBll.ValidateUser(usr.username, usr.password);
 
             if (id > 0)
             {
                 HttpContext.Session.SetString("UserId", id.ToString());
-                return RedirectToAction("Custumers/List", null);
+                return RedirectToAction("Index", "DataGrid");
             }
-
             return View(401);
-
         }
     }
 }

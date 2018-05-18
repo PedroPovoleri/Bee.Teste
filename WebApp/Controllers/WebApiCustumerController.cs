@@ -8,8 +8,8 @@ using Model.POCO;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Newtonsoft.Json;
-using WebApp.Filters;
 using Bll.Validation.Interfaces;
+using Microsoft.AspNetCore.Http;
 
 namespace WebApp.Controllers
 {
@@ -45,7 +45,7 @@ namespace WebApp.Controllers
         [Route("InsertCustumer")]
         public IActionResult InsertCustumer(string values)
         {
-            if (checkIsAutorized(1, "CRUD"))
+            if (checkIsAutorized("CRUD"))
             {
                 var newCustumer = new Customers();
                 JsonConvert.PopulateObject(values, newCustumer);
@@ -61,7 +61,7 @@ namespace WebApp.Controllers
         [Route("UpdateCustumer")]
         public void UpdateCustumer(int key, string values)
         {
-            if (checkIsAutorized(1, "CRUD"))
+            if (checkIsAutorized("CRUD"))
             {
                 var custumer = _customers.GetCustomersById(key);
                 JsonConvert.PopulateObject(values, custumer);
@@ -74,7 +74,7 @@ namespace WebApp.Controllers
         [Route("DeleteCustumer")]
         public void DeleteCustumer(int key)
         {
-            if (checkIsAutorized(1, "CRUD"))
+            if (checkIsAutorized("CRUD"))
             {
                 var custumer = _customers.GetCustomersById(key);
                 _customers.RemoveCustumers(custumer);
@@ -86,6 +86,7 @@ namespace WebApp.Controllers
         [Route("CustumerDetails")]
         public JsonResult CustumerDetails(long customersId)
         {
+
             JsonResult json = new JsonResult(_customers.GetCustomersById(customersId));
             json.ContentType = "application/json";
             json.StatusCode = 200;
@@ -98,7 +99,7 @@ namespace WebApp.Controllers
         {
             try
             {
-                if (checkIsAutorized(1, "CRUD"))
+                if (checkIsAutorized("CRUD"))
                 {
 
                     var lookup = from i in _customers.GetCustomers()
@@ -122,9 +123,19 @@ namespace WebApp.Controllers
 
         }
 
-        private bool checkIsAutorized(long usrId, string resource)
+        private bool checkIsAutorized(string resource)
         {
-            return _resources.UserHasResourceAuthorization(usrId, resource);
+            try
+            {
+                var _id = HttpContext.Session.GetString("UserId");
+                int id = int.Parse(_id);
+                return _resources.UserHasResourceAuthorization(id, resource);
+
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }
